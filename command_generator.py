@@ -5,7 +5,13 @@ client = OpenAI()
 
 def generate_command(action):
     # Construct the prompt for the LLM
-    prompt = f"Generate a sequence of commands to perform a robot action splitted only by a new line. The commands available are 'MFx', where 'MF' means moving forward and 'x' is the time in seconds for the following action, 'CCWa' where CCW represents counter clock wise rotations in a 'x' angle in degrees, and 'CWx' the clockwise rotation: {action}"
+    prompt = "Generate a sequence of commands to perform a robot action, each separated by a new line. " + \
+         "The available commands are (if a new command is needed you can created it based on the previous ones): " + \
+         "'ONx', where 'ON' means starting the engine at an analog speed 'x' (from 0 to 255); " + \
+         "'OFF', to stop the robot; " + \
+         "'MFx', where 'MF' means moving forward, and 'x' is the time in milliseconds for the action; " + \
+         "'CCWx', where 'CCW' represents counterclockwise rotation by an angle 'x' in degrees; " + \
+         f"'CWx', for clockwise rotation by an angle 'x' in degrees: {action}"
 
     try:
         # Call the OpenAI API to get a command
