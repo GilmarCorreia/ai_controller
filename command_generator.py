@@ -6,7 +6,7 @@ client = OpenAI()
 def generate_command(action):
     # Construct the prompt for the LLM
     prompt = "Generate a sequence of commands to perform a robot action, each separated by a new line. " + \
-         "The available commands are (if a new command is needed you can created it based on the previous ones): " + \
+         "The available commands are: " + \
          "'ONx', where 'ON' means starting the engine at an analog speed 'x' (from 0 to 255); " + \
          "'OFF', to stop the robot; " + \
          "'MFx', where 'MF' means moving forward, and 'x' is the time in milliseconds for the action; " + \
@@ -16,7 +16,7 @@ def generate_command(action):
     try:
         # Call the OpenAI API to get a command
         completion = client.chat.completions.create(
-            model="gpt-3.5-turbo-0125",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "user", "content": prompt}
             ]
