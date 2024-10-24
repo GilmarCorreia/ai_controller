@@ -2,22 +2,6 @@
 
 MPU9250 mpu;
 
-int portaA1 = 2;
-int portaA2 = 4;
-int portaVelA = 3;
-
-int portaB1 = 5;
-int portaB2 = 7;
-int portaVelB = 6;
-
-int portaLED = 13;
-
-int portaSensorDir = 0;
-int portaSensorEsq = 1;
-
-float raio_roda = (6.8/2.0)/100.0;
-float raio_robo = (16.0/2.0)/100.0;
-
 void setup() {
     Serial.begin(115200);
     Wire.begin();
@@ -45,15 +29,7 @@ void setup() {
     print_calibration();
     mpu.verbose(false);
 
-    pinMode(portaA1, OUTPUT); // sentido A
-    pinMode(portaA2, OUTPUT); // sentido A
-    pinMode(portaVelA, OUTPUT); // velocidade A
-
-    pinMode(portaB1, OUTPUT); // sentido B
-    pinMode(portaB2, OUTPUT); // sentido B
-    pinMode(portaVelB, OUTPUT); // velocidade B
-
-    pinMode(portaLED, OUTPUT); // porta LED
+    
 
     rotacionar(90);
 }
