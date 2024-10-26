@@ -189,6 +189,21 @@ void Ligeirinho::rotate(float angle){
   this->stop();
 
 }
+
+void Ligeirinho::line_follower(int threshold){
+  if(analogRead(this->port_rightSensor) < threshold && analogRead(this->port_leftSensor) < threshold){
+    this->forward();
+  }
+  else if(analogRead(this->port_rightSensor) < threshold && analogRead(this->port_leftSensor) > threshold){
+    this->counterclockwise();
+  }
+  else if(analogRead(this->port_rightSensor) > threshold && analogRead(this->port_leftSensor) < threshold){
+    this->clockwise();
+  }
+  else{
+    this->forward();
+  }
+}
 // void Ligeirinho::rotate(float angle){
 //   float initial_time = ((float) millis())/1000.0;
 //   float final_time = initial_time;

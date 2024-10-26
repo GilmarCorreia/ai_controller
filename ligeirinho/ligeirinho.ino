@@ -28,8 +28,8 @@ void loop(){
 
     int valor = num.toInt();
 
-    //Serial.println(comando);
-    //Serial.println(String(valor));
+    Serial.println(comando);
+    Serial.println(String(valor));
 
     if (comando.equals("ON")){
       robo.enginesSpeed(valor);
@@ -54,6 +54,27 @@ void loop(){
       robo.blink_led(valor);
     }
     else if(comando.equals("OFF")){
+      robo.stop();
+    }
+    else if(comando.equals("LF")){
+      // do{
+      //   Serial.println(analogRead(robo.port_rightSensor));
+      // }
+      // while (Serial.available() <= 0);
+      
+      // Serial.readStringUntil('\n');
+
+      // do{
+      //   Serial.println(analogRead(robo.port_leftSensor));
+      // }
+      // while (Serial.available() <= 0);
+
+      // Serial.readStringUntil('\n');
+
+      robo.enginesSpeed(150);
+      do{
+        robo.line_follower(950);
+      } while (Serial.available() <= 0);
       robo.stop();
     }
   }

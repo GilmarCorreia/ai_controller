@@ -25,6 +25,11 @@ public:
   void enginesSpeed(int speed);
   void stop();
   void blink_led(int time);
+  void line_follower(int threshold);
+
+  // Sensores de refletância
+  int port_rightSensor = 0;
+  int port_leftSensor = 1;
 private:
   // Motor A
 	int port_A1 = 2;
@@ -38,10 +43,6 @@ private:
 
   // LED
   int port_LED = 13;
-
-  // Sensores de refletância
-  int port_rightSensor = 0;
-  int port_leftSensor = 1;
 
   // Sensor IMU
   MPU9250 mpu;

@@ -27,6 +27,7 @@ The available commands are:
    - 'BLx': Blinks an LED for 'x' milliseconds;
    - 'CCWx': Rotates the robot counterclockwise by an angle 'x' in degrees;
    - 'CWx': Rotates the robot clockwise by an angle 'x' in degrees.
+   - 'LF': Activate the line follower function.
 
 Note: The sequence must start with 'ONx' and end with 'OFF', except when blinking the LED. Ensure that all values for 'x' (speed, time, and angle) are positive numbers.
 Examples:
@@ -63,6 +64,10 @@ CCW90
 7
 Action: Rotate the robot clockwise by 180 degrees.
 CW180
+
+8
+Action: Activate the line follower function.
+LF
 
 Our action is:
 Action: {action}
