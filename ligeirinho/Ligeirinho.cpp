@@ -98,7 +98,7 @@ float Ligeirinho::readYaw(){
 }
 
 // Controls
-void Ligeirinho::andarParaFrente(){
+void Ligeirinho::forward(){
   digitalWrite(this->port_A1, HIGH);
   digitalWrite(this->port_A2, LOW);
 
@@ -106,7 +106,7 @@ void Ligeirinho::andarParaFrente(){
   digitalWrite(this->port_B2, LOW);
 }
 
-void Ligeirinho::andarParaTras(){
+void Ligeirinho::backwards(){
   digitalWrite(this->port_A1, LOW);
   digitalWrite(this->port_A2, HIGH);
   
@@ -114,7 +114,7 @@ void Ligeirinho::andarParaTras(){
   digitalWrite(this->port_B2, HIGH);
 }
 
-void Ligeirinho::girarAntihorario(){
+void Ligeirinho::counterclockwise(){
   digitalWrite(this->port_A1, LOW);
   digitalWrite(this->port_A2, HIGH);
   
@@ -122,7 +122,7 @@ void Ligeirinho::girarAntihorario(){
   digitalWrite(this->port_B2, LOW);
 }
 
-void Ligeirinho::girarHorario(){
+void Ligeirinho::clockwise(){
   digitalWrite(this->port_A1, HIGH);
   digitalWrite(this->port_A2, LOW);
   
@@ -130,26 +130,26 @@ void Ligeirinho::girarHorario(){
   digitalWrite(this->port_B2, HIGH);
 }
 
-void Ligeirinho::ligarMotores(int vel){
-  if (vel > 255)
-      vel = 255;
-  else if(vel<10)
-      vel = 10;
+void Ligeirinho::enginesSpeed(int speed){
+  if (speed > 255)
+      speed = 255;
+  else if(speed<10)
+      speed = 10;
 
-  analogWrite(this->port_aSpeed, vel);
-  analogWrite(this->port_bSpeed, vel);
+  analogWrite(this->port_aSpeed, speed);
+  analogWrite(this->port_bSpeed, speed);
 }
 
-void Ligeirinho::desligarMotores(){
+void Ligeirinho::stop(){
   analogWrite(this->port_aSpeed, 0);
   analogWrite(this->port_bSpeed, 0);
 }
 
-void Ligeirinho::piscarLED(int tempo){
+void Ligeirinho::blink_led(int time){
   digitalWrite(this->port_LED, HIGH);
-  delay(tempo);
+  delay(time/2);
   digitalWrite(this->port_LED, LOW);
-  delay(tempo);
+  delay(time/2);
 }
 
 // Methods
@@ -169,8 +169,8 @@ void Ligeirinho::rotate(float angle){
   float total_time = 0;
   float currentAngle = 0;
 
-  this->girarHorario();
-  this->ligarMotores(225);
+  this->clockwise();
+  this->enginesSpeed(225);
   do {
     if(this->mpu.update()){
       final_time = ((float) millis())/1000.0;
@@ -182,11 +182,11 @@ void Ligeirinho::rotate(float angle){
       initial_time = final_time;
 
       float erro = angle - currentAngle;
-      this->ligarMotores(255*(erro/angle));
+      this->enginesSpeed(255*(erro/angle));
     }
   } while ((currentAngle < angle) && (total_time < 1.5));
 
-  this->desligarMotores();
+  this->stop();
 
 }
 // void Ligeirinho::rotate(float angle){
@@ -243,18 +243,18 @@ void Ligeirinho::rotate(float angle){
 
 //       float vel = 0.0;
 //       if (clockwise_distance > counter_clockwise_distance){
-//         this->girarHorario();
+//         this->clockwise();
 //         vel = control_signal*max_angular_speed;
 //       }
 //       else{
-//         this->girarAntihorario();
+//         this->counterclockwise();
 //         vel = control_signal*max_angular_speed;
 //       }
 
 //       //Serial.print(", angular vel: ");
 //       //Serial.println(abs(vel));
 
-//       this->ligarMotores(abs(vel));
+//       this->enginesSpeed(abs(vel));
 
 //       initial_time = final_time;
 

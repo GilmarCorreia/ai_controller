@@ -111,11 +111,11 @@ void loop() {
     if (comando.equals("ON")){
       ligarMotores(valor);
     }
-    else if (comando.equals("MF")){
+    else if (comando.equals("F")){
       andarParaFrente();
       delay(valor);
     }
-    else if (comando.equals("MB")){
+    else if (comando.equals("B")){
       andarParaTras();
       delay(valor);
     }

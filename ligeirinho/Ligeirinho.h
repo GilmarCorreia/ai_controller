@@ -16,6 +16,15 @@ public:
   void print_calibration();
   void setSpeeds(float linear_speed, float angular_speed);
   void rotate(float angle);
+
+  // Controls
+  void forward();
+  void backwards();
+  void counterclockwise();
+  void clockwise();
+  void enginesSpeed(int speed);
+  void stop();
+  void blink_led(int time);
 private:
   // Motor A
 	int port_A1 = 2;
@@ -40,15 +49,6 @@ private:
   // Propriedades do robô
   float wheel_radius = (6.8/2.0)/100.0;
   float wheel_track = (16.0/2.0)/100.0;
-
-  // Controls
-  void andarParaFrente();
-  void andarParaTras();
-  void girarAntihorario();
-  void girarHorario();
-  void ligarMotores(int vel);
-  void desligarMotores();
-  void piscarLED(int tempo);
 
   // Methods
   float normalizeAngle(float angle);
