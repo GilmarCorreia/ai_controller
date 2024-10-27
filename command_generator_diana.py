@@ -32,56 +32,64 @@ else:
 def generate_command(action):
     # Construct the prompt for the LLM
     prompt = f"""
------ Instructions -----
+IMPORTANT:
+1. Besides the activities you can do, you can now create commands for a robot action.
+2. Your anwser only should be the commands separated by new lines.
 
-Generate a sequence of commands to perform a robot action. Each command should be on a new line.
-The available commands are:
-   - 'ONx': Starts the engine at an analog speed 'x' (range: 100 to 255);
-   - 'OFF': Stops the robot;
-   - 'MFx': Moves the robot forward for 'x' milliseconds;
-   - 'MBx': Moves the robot backwards for 'x' milliseconds;
-   - 'BLx': Blinks an LED for 'x' milliseconds;
-   - 'CCWx': Rotates the robot counterclockwise by an angle 'x' in degrees;
-   - 'CWx': Rotates the robot clockwise by an angle 'x' in degrees.
+AVAILABLE COMMANDS:
+- 'ONx' - Starts the engine at an analog speed 'x' (range: 100 to 255);
+- 'OFF' - Stops the robot;
+- 'MFx' - Moves the robot forward for 'x' milliseconds;
+- 'MBx' - Moves the robot backwards for 'x' milliseconds;
+- 'BLx' - Blinks an LED for 'x' milliseconds;
+- 'CCWx' - Rotates the robot counterclockwise by an angle 'x' in degrees;
+- 'CWx' - Rotates the robot clockwise by an angle 'x' in degrees.
+- 'LF' - Activate the line follower function.
 
-Note: The sequence must start with 'ONx' and end with 'OFF', except when blinking the LED. Ensure that all values for 'x' (speed, time, and angle) are positive numbers.
-Examples:
+NOTES:
+1. The sequence must start with 'ONx' and end with 'OFF', except when blinking the LED.
+2. Ensure that all values for 'x' (speed, time, and angle) are positive numbers.
 
-1
-Action: move forward with max speed for 3 seconds
+EXAMPLES:
+1.
+Action - move forward with max speed for 3 seconds
 ON255
 MF3000
 OFF
 
-2
-Action: blink a LED for 3 seconds.
+2.
+Action - blink a LED for 3 seconds.
 BL3000
 
-3
-Action: Start running
+3.
+Action - Start running
 ON255
 
-4
-Action: Stop running
+4.
+Action - Stop running
 OFF
 
-5
-Action: Move backwards with 100% of speed for 5 seconds and when it stop blink a LED for 3 seconds.
+5.
+Action - Move backwards with 100% of speed for 5 seconds and when it stop blink a LED for 3 seconds.
 ON255
 MB5000
 OFF
 BL3000
 
-6
-Action: Rotate the robot counterclockwise by 90 degrees.
+6.
+Action - Rotate the robot counterclockwise by 90 degrees.
 CCW90
 
-7
-Action: Rotate the robot clockwise by 180 degrees.
+7.
+Action - Rotate the robot clockwise by 180 degrees.
 CW180
 
-Our action is:
-Action: {action}
+8.
+Action - Activate the line follower function.
+LF
+
+OUR ACTION IS:
+Action - {action}
 """
     # Get session
     data = {
@@ -97,4 +105,4 @@ Action: {action}
     else:
         raise Exception(f"Erro na requisição: {response.status_code}")
     
-generate_command("Mova o robô para frente por 3 segundos.")
+generate_command("Mova-se em um quadrado.")
