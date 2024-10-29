@@ -2,9 +2,10 @@ import serial
 import time
 
 from command_generator import generate_command
+#from command_generator_diana import generate_command
 
 # Configurar porta serial (substitua 'COM3' pelo seu porto no Windows ou '/dev/ttyUSB0' no Linux)
-arduino = serial.Serial('COM3', 115200, timeout=1)
+#arduino = serial.Serial('COM3', 115200, timeout=1)
 #arduino = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 time.sleep(2)
 
@@ -13,7 +14,8 @@ def send_command(command):
     print(commands)
     for command in commands:
         #print(f"{command}\n".encode())
-        arduino.write(f"{command}\n".encode())  # Envia o comando para o Arduino
+        pass
+        #arduino.write(f"{command}\n".encode())  # Envia o comando para o Arduino
 
 def main():
     try:
@@ -26,7 +28,7 @@ def main():
     except KeyboardInterrupt:
         print("\nPrograma encerrado pelo usuário.")
 
-    arduino.close()
+    #arduino.close()
 
 if __name__ == "__main__":
     main()

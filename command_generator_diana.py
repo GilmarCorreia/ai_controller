@@ -7,8 +7,9 @@ name = "External-Dev"
 
 # Get access token
 url = f"{main_url}token?key={key}&accessName={name}"
-response = requests.get(url)
+response = requests.get(url, timeout=5)
 
+print("Iniciando...")
 # Verifica se a requisição foi bem-sucedida
 if response.status_code == 200:
     dados = response.json()  # Converte a resposta para JSON (se aplicável)
@@ -17,80 +18,83 @@ if response.status_code == 200:
     headers = {
         "Authorization": f"Bearer {token}"
     }
+
+    print("Token obtido com sucesso!")
 else:
     raise Exception(f"Erro na requisição: {response.status_code}")
 
 # Get session
-response = requests.get(f"{main_url}session", headers=headers)
+response = requests.get(f"{main_url}session", headers=headers, timeout=5)
 
 if response.status_code == 200:
     dados = response.json()
     session = dados.get("session")
+    print("Sessão obtida com sucesso!")
 else:
     raise Exception(f"Erro na requisição: {response.status_code}")
 
 def generate_command(action):
     # Construct the prompt for the LLM
     prompt = f"""
-IMPORTANT:
-1. Besides the activities you can do, you can now create commands for a robot action.
-2. Your anwser only should be the commands separated by new lines.
+**COMANDOS DISPONÍVEIS:**
+- `'ONx'` – Liga o motor em uma velocidade analógica `x` (de 100 a 255).
+- `'OFF'` – Desliga o robô.
+- `'MFx'` – Move o robô para frente por `x` milissegundos.
+- `'MBx'` – Move o robô para trás por `x` milissegundos.
+- `'BLx'` – Pisca o LED por `x` milissegundos.
+- `'CCWx'` – Gira o robô em sentido anti-horário por `x` graus.
+- `'CWx'` – Gira o robô em sentido horário por `x` graus.
+- `'LF'` – Ativa a função de seguidor de linha.
 
-AVAILABLE COMMANDS:
-- 'ONx' - Starts the engine at an analog speed 'x' (range: 100 to 255);
-- 'OFF' - Stops the robot;
-- 'MFx' - Moves the robot forward for 'x' milliseconds;
-- 'MBx' - Moves the robot backwards for 'x' milliseconds;
-- 'BLx' - Blinks an LED for 'x' milliseconds;
-- 'CCWx' - Rotates the robot counterclockwise by an angle 'x' in degrees;
-- 'CWx' - Rotates the robot clockwise by an angle 'x' in degrees.
-- 'LF' - Activate the line follower function.
+**REGRAS:**
+0. Agora você pode definir ações detalhadas para um robô usando uma sequência de comandos específicos.
+1. Quando existir os comandos `'MFx'` e `'MBx'` na resposta comece sempre com `'ONx'` e finalize com `'OFF'`.
+2. Todos os valores `x` (velocidade, duração e ângulo) devem ser números positivos.
+3. Todas as respostas devem conter APENAS os comandos, separados por linhas.
+4. Não inclua nenhum texto adicional.
 
-NOTES:
-1. The sequence must start with 'ONx' and end with 'OFF', except when blinking the LED.
-2. Ensure that all values for 'x' (speed, time, and angle) are positive numbers.
-
-EXAMPLES:
-1.
-Action - move forward with max speed for 3 seconds
+**EXEMPLOS:**
+- Ação: mover para frente com velocidade máxima por 3 segundos.
+- Resposta esperada:
 ON255
 MF3000
 OFF
 
-2.
-Action - blink a LED for 3 seconds.
+- Ação: piscar um LED por 3 segundos.
+- Resposta esperada:
 BL3000
 
-3.
-Action - Start running
+- Ação: iniciar o robô.
+- Resposta esperada:
 ON255
 
-4.
-Action - Stop running
+- Ação: parar o robô.
+- Resposta esperada:
 OFF
 
-5.
-Action - Move backwards with 100% of speed for 5 seconds and when it stop blink a LED for 3 seconds.
+- Ação: mover para trás com velocidade máxima por 5 segundos e, ao parar, piscar um LED por 3 segundos.
+- Resposta esperada:
 ON255
 MB5000
 OFF
 BL3000
 
-6.
-Action - Rotate the robot counterclockwise by 90 degrees.
+- Ação: girar o robô em sentido anti-horário por 90 graus.
+- Resposta esperada:
 CCW90
 
-7.
-Action - Rotate the robot clockwise by 180 degrees.
+- Ação: girar o robô em sentido horário por 180 graus.
+- Resposta esperada:
 CW180
 
-8.
-Action - Activate the line follower function.
+- Ação: ativar o seguidor de linha.
+- Resposta esperada:
 LF
 
-OUR ACTION IS:
-Action - {action}
+**A SUA AÇÃO É:**
+- Ação: {action}
 """
+    
     # Get session
     data = {
         "text": prompt,
@@ -101,8 +105,8 @@ Action - {action}
     if response.status_code == 200:
         dados = response.json()
         commands = dados.get("responses")
-        print(commands[-1]["text"])
+        return commands[-1]["text"]
     else:
         raise Exception(f"Erro na requisição: {response.status_code}")
     
-generate_command("Mova-se em um quadrado.")
+#generate_command("Mova-se em um quadrado.")
