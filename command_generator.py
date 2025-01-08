@@ -1,7 +1,5 @@
 from openai import OpenAI
 client = OpenAI()
-# Set your OpenAI API key
-#OPENAI_API_KEY=sk-U3Lva5hvrDffbg_Z-mR8wPhWb0CQF8xphEMf9TixSRT3BlbkFJHfAQSMjruc5fzhkRvxz1-3SxwM2JwH9AfZEuQBdx8A
 
 def generate_command(action):
     # Construct the prompt for the LLM
