@@ -1,8 +1,8 @@
 import json
 import requests
 
-main_url = "https://dianaapi-543834107372.us-central1.run.app/"
-key = "cba401af31b045de4b45cfb82df9ffe62ecc2b99ca9edbc2aef1738868e3745a"
+main_url = ""
+key = ""
 name = "External-Dev"
 
 # Get access token

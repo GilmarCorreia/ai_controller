@@ -1,6 +1,5 @@
 from openai import OpenAI
 client = OpenAI()
-
 def generate_command(action):
     # Construct the prompt for the LLM
 
