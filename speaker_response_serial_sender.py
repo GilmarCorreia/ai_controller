@@ -1,7 +1,7 @@
+import os
 import time
 import json
 import serial
-import pyttsx3
 import keyboard
 import speech_recognition as sr
 from assistant_openai import generate_command
@@ -49,20 +49,7 @@ def capture_audio():
     return text
 
 def speech(texto):
-    engine = pyttsx3.init()
-    voices = engine.getProperty('voices')
-
-    # Tentar escolher uma voz feminina robótica
-    for voice in voices:
-        if "female" in voice.name.lower():  # Pode mudar para "male" se quiser
-            engine.setProperty('voice', voice.id)
-            break
-    
-    engine.setProperty('rate', 180)  # Velocidade da fala (padrão é 200)
-    #engine.setProperty('pitch', 150)  # Pode ser ajustado conforme necessário
-    
-    engine.say(texto)
-    engine.runAndWait()
+    os.system(f'espeak -v pt+f3 -p 150 -s 160 "{texto}"')
 
 def main():
     try:
