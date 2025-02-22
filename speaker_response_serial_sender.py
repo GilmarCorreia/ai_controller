@@ -3,12 +3,11 @@ import time
 import json
 import serial
 import threading
-from pynput import keyboard
+import keyboard
 import speech_recognition as sr
 from assistant_openai import generate_command
 
 recognizer = sr.Recognizer()
-recording = False
 audio_data = None
 running = True  # Sinal de execução global
 
@@ -25,7 +24,7 @@ def send_command(command):
         # arduino.write(f"{command}\n".encode())
 
 def capture_audio():
-    global recording, audio_data
+    global audio_data
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         print("🎤 Escutando... (Segure a barra de espaço)")
@@ -50,16 +49,17 @@ def recognize_speech():
 def speech(texto):
     os.system(f'espeak -v pt+f3 -p 150 -s 160 "{texto}"')
 
-def on_press(key):
-    global recording
-    if key == keyboard.Key.space and not recording:
-        recording = True
-        capture_audio()
+def listen_for_space():
+    """Thread para capturar áudio enquanto a barra de espaço estiver pressionada."""
+    global running
+    while running:
+        print("Pressione a barra de espaço para falar...")
+        keyboard.wait("space")  # Aguarda pressionamento da tecla
+        print("🎤 Gravando... Segure a barra de espaço.")
 
-def on_release(key):
-    global recording
-    if key == keyboard.Key.space and recording:
-        recording = False
+        capture_audio()  # Captura o áudio enquanto pressionado
+
+        print("🛑 Parando gravação...")
         command = json.loads(generate_command(recognize_speech()))
         print(command)
 
@@ -72,15 +72,10 @@ def on_release(key):
         speech(text_response)
         # send_command(command)
 
-        print("🛑 Parando gravação...")
-        print("Pressione a barra de espaço para falar...")
-
 def main():
     global running
-    listener = keyboard.Listener(on_press=on_press, on_release=on_release)
-    listener.start()
-    
-    print("Pressione a barra de espaço para falar...")
+    listener_thread = threading.Thread(target=listen_for_space, daemon=True)
+    listener_thread.start()
 
     try:
         while running:
@@ -88,8 +83,6 @@ def main():
     except KeyboardInterrupt:
         print("\n🚀 Encerrando programa...")
         running = False
-        listener.stop()
-        # arduino.close()
         print("✅ Programa encerrado com sucesso.")
 
 if __name__ == "__main__":
