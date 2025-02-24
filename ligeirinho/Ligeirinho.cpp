@@ -1,8 +1,5 @@
 #include "Ligeirinho.h"
 
-Ligeirinho::Ligeirinho() {
-}
-
 void Ligeirinho::begin(){
   //Serial.println("Configurando Ligeirinho");
 
@@ -19,15 +16,17 @@ void Ligeirinho::begin(){
   // Configurando porta do LED
   pinMode(this->port_LED, OUTPUT); // porta LED
 
-  // Configurando IMU
-  Wire.begin();
-  delay(2000);
-  if (!this->mpu.setup(0x68)) {  // endereço do mpu9250
-    while (1) {
-      Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
-      delay(5000);
-    }
-  }
+  // Wire configurarion
+  //Wire.begin();
+  //delay(2000);
+
+  // // Configurando IMU
+  // if (!this->mpu.setup(0x68)) {  // endereço do mpu9250
+  //   while (1) {
+  //     Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+  //     delay(5000);
+  //   }
+  // }
 
   // // calibrate anytime you want to
   // //Serial.println("Accel Gyro calibration will start in 5sec.");
@@ -46,56 +45,57 @@ void Ligeirinho::begin(){
 
   // //this->print_calibration();
   // this->mpu.verbose(false);
+  
 }
 
-void Ligeirinho::print_calibration() {
-    Serial.println("< calibration parameters >");
-    Serial.println("accel bias [g]: ");
-    Serial.print(this->mpu.getAccBiasX() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(this->mpu.getAccBiasY() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(this->mpu.getAccBiasZ() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-    Serial.println();
-    Serial.println("gyro bias [deg/s]: ");
-    Serial.print(this->mpu.getGyroBiasX() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(this->mpu.getGyroBiasY() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-    Serial.print(", ");
-    Serial.print(this->mpu.getGyroBiasZ() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-    Serial.println();
-    Serial.println("mag bias [mG]: ");
-    Serial.print(this->mpu.getMagBiasX());
-    Serial.print(", ");
-    Serial.print(this->mpu.getMagBiasY());
-    Serial.print(", ");
-    Serial.print(this->mpu.getMagBiasZ());
-    Serial.println();
-    Serial.println("mag scale []: ");
-    Serial.print(this->mpu.getMagScaleX());
-    Serial.print(", ");
-    Serial.print(this->mpu.getMagScaleY());
-    Serial.print(", ");
-    Serial.print(this->mpu.getMagScaleZ());
-    Serial.println();
-}
+// void Ligeirinho::print_calibration() {
+//     Serial.println("< calibration parameters >");
+//     Serial.println("accel bias [g]: ");
+//     Serial.print(this->mpu.getAccBiasX() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getAccBiasY() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getAccBiasZ() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
+//     Serial.println();
+//     Serial.println("gyro bias [deg/s]: ");
+//     Serial.print(this->mpu.getGyroBiasX() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getGyroBiasY() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getGyroBiasZ() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
+//     Serial.println();
+//     Serial.println("mag bias [mG]: ");
+//     Serial.print(this->mpu.getMagBiasX());
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getMagBiasY());
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getMagBiasZ());
+//     Serial.println();
+//     Serial.println("mag scale []: ");
+//     Serial.print(this->mpu.getMagScaleX());
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getMagScaleY());
+//     Serial.print(", ");
+//     Serial.print(this->mpu.getMagScaleZ());
+//     Serial.println();
+// }
 
 // Setters
 
 // Getters
-float Ligeirinho::readYaw(){
-  if (this->mpu.update()) {
-    float yaw = this->mpu.getYaw();
-    float absoluteYaw = yaw;
+// float Ligeirinho::readYaw(){
+//   if (this->mpu.update()) {
+//     float yaw = this->mpu.getYaw();
+//     float absoluteYaw = yaw;
 
-    if (yaw < 0){
-      absoluteYaw = 360.0 + yaw;
-    }
+//     if (yaw < 0){
+//       absoluteYaw = 360.0 + yaw;
+//     }
 
-    return absoluteYaw*(M_PI/180.0);
-  }
-  return 0.0;
-}
+//     return absoluteYaw*(M_PI/180.0);
+//   }
+//   return 0.0;
+// }
 
 // Controls
 void Ligeirinho::forward(){
@@ -130,7 +130,7 @@ void Ligeirinho::clockwise(){
   digitalWrite(this->port_B2, HIGH);
 }
 
-void Ligeirinho::enginesSpeed(int speed){
+void Ligeirinho::enginesSpeed(byte speed){
   if (speed > 255)
       speed = 255;
   else if(speed<10)
@@ -172,18 +172,18 @@ void Ligeirinho::rotate(float angle){
   this->clockwise();
   this->enginesSpeed(225);
   do {
-    if(this->mpu.update()){
-      final_time = ((float) millis())/1000.0;
-      float dt = final_time - initial_time;
-      total_time += dt;
-      currentAngle += abs(this->mpu.getGyroZ())*dt;
-      //Serial.println(currentAngle); 
+    //if(this->mpu.update()){
+      // final_time = ((float) millis())/1000.0;
+      // float dt = final_time - initial_time;
+      // total_time += dt;
+      // currentAngle += abs(this->mpu.getGyroZ())*dt;
+      // //Serial.println(currentAngle); 
 
-      initial_time = final_time;
+      // initial_time = final_time;
 
-      float erro = angle - currentAngle;
-      this->enginesSpeed(255*(erro/angle));
-    }
+      // float erro = angle - currentAngle;
+      // this->enginesSpeed(255*(erro/angle));
+    //}
   } while ((currentAngle < angle) && (total_time < 1.5));
 
   this->stop();
@@ -204,6 +204,7 @@ void Ligeirinho::line_follower(int threshold){
     this->forward();
   }
 }
+
 // void Ligeirinho::rotate(float angle){
 //   float initial_time = ((float) millis())/1000.0;
 //   float final_time = initial_time;

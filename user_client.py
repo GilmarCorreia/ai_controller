@@ -1,41 +1,26 @@
-import os
 import time
-import json
-import serial
-import threading
+import requests
 from pynput import keyboard
 import speech_recognition as sr
-from assistant_openai import generate_command
 
+API_URL = "http://localhost:8000/process_audio"
 recognizer = sr.Recognizer()
 recording = False
-audio_data = None
 running = True  # Sinal de execução global
-
-# Configurar porta serial (comente se não usar Arduino)
-# arduino = serial.Serial('COM3', 115200, timeout=1)  # Para Windows
-# arduino = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)  # Para Linux
-time.sleep(2)
-
-def send_command(command):
-    commands = command.split("\n")
-    print(commands)
-    for command in commands:
-        pass
-        # arduino.write(f"{command}\n".encode())
+audio_data = None
 
 def capture_audio():
-    global recording, audio_data
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         print("🎤 Escutando... (Segure a barra de espaço)")
         try:
             audio_data = recognizer.listen(source, timeout=10, phrase_time_limit=5)
+            return audio_data
         except sr.WaitTimeoutError:
             print("⏳ Tempo limite sem áudio.")
+            return None
 
-def recognize_speech():
-    global audio_data
+def recognize_speech(audio_data):
     if audio_data:
         try:
             text = recognizer.recognize_google(audio_data, language="pt-BR")
@@ -47,33 +32,39 @@ def recognize_speech():
             print("❌ Erro ao acessar o serviço de reconhecimento.")
     return ""
 
-def speech(texto):
-    os.system(f'espeak -v pt+f3 -p 150 -s 160 "{texto}"')
+def send_to_server(transcription):
+    try:
+        response = requests.post(
+            API_URL, 
+            json={
+                "transcription": transcription
+            }
+        )
+        if response.status_code == 200:
+            print("✅ Resposta do servidor:", response.json())
+        else:
+            print("❌ Erro ao enviar para o servidor:", response.text)
+    except requests.RequestException as e:
+        print("🚨 Erro de conexão com o servidor:", e)
 
 def on_press(key):
-    global recording
+    global audio_data, recording
     if key == keyboard.Key.space and not recording:
         recording = True
-        capture_audio()
+        audio_data = capture_audio()
 
 def on_release(key):
-    global recording
+    global audio_data, recording
     if key == keyboard.Key.space and recording:
         recording = False
-        command = json.loads(generate_command(recognize_speech()))
-        print(command)
 
-        # Comandos do assistente
-        text_response = command["text_response"]
-        eyes_expression = command["eyes_expression"]
-        robot_commands = command["robot_commands"]
-
-        # Falar resposta
-        speech(text_response)
-        # send_command(command)
+        if audio_data:
+            transcription = recognize_speech(audio_data)
+            if transcription and transcription != "":
+                send_to_server(transcription)
 
         print("🛑 Parando gravação...")
-        print("Pressione a barra de espaço para falar...")
+        print("\nPressione a barra de espaço para falar...")
 
 def main():
     global running
@@ -89,7 +80,6 @@ def main():
         print("\n🚀 Encerrando programa...")
         running = False
         listener.stop()
-        # arduino.close()
         print("✅ Programa encerrado com sucesso.")
 
 if __name__ == "__main__":
