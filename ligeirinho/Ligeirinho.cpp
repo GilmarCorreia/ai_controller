@@ -173,13 +173,13 @@ void Ligeirinho::rotate(float angle){
   this->enginesSpeed(225);
   do {
     //if(this->mpu.update()){
-      // final_time = ((float) millis())/1000.0;
-      // float dt = final_time - initial_time;
-      // total_time += dt;
+      final_time = ((float) millis())/1000.0;
+      float dt = final_time - initial_time;
+      total_time += dt;
       // currentAngle += abs(this->mpu.getGyroZ())*dt;
       // //Serial.println(currentAngle); 
 
-      // initial_time = final_time;
+      initial_time = final_time;
 
       // float erro = angle - currentAngle;
       // this->enginesSpeed(255*(erro/angle));

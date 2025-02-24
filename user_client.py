@@ -3,7 +3,7 @@ import requests
 from pynput import keyboard
 import speech_recognition as sr
 
-API_URL = "http://localhost:8000/process_audio"
+API_URL = "http://192.168.15.5:8000/process_audio"
 recognizer = sr.Recognizer()
 recording = False
 running = True  # Sinal de execução global

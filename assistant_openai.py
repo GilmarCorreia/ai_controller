@@ -26,7 +26,7 @@ def generate_command(interaction):
 
     # Verificando a resposta
     while run.status != "completed":
-        time.sleep(1)
+        #time.sleep(1)
         run = openai.beta.threads.runs.retrieve(
             thread_id=thread.id,
             run_id=run.id
