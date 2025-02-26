@@ -1,11 +1,11 @@
 #include "Ligeirinho.h"
 
 Ligeirinho robo;
+int initialSpeed = 255;
 
 void setup(){
   Serial.begin(115200);
   robo.begin(); 
-
   //Serial.println("Robô PREPARADO!");
 }
 
@@ -30,17 +30,22 @@ void loop(){
 
     Serial.println(comando);
     Serial.println(String(valor));
-
+    
     if (comando.equals("ON")){
-      robo.enginesSpeed(valor);
+      initialSpeed = valor;
+      robo.enginesSpeed(initialSpeed);
     }
     else if (comando.equals("MF")){
+      robo.enginesSpeed(initialSpeed);
       robo.forward();
       delay(valor);
+      robo.stop();
     }
     else if (comando.equals("MB")){
+      robo.enginesSpeed(initialSpeed);
       robo.backwards();
       delay(valor);
+      robo.stop();
     }
     else if(comando.equals("CW")){
       robo.clockwise();

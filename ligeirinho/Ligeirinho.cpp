@@ -20,14 +20,14 @@ void Ligeirinho::begin(){
   pinMode(this->port_LED, OUTPUT); // porta LED
 
   // Configurando IMU
-  Wire.begin();
-  delay(2000);
-  if (!this->mpu.setup(0x68)) {  // endereço do mpu9250
-    while (1) {
-      Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
-      delay(5000);
-    }
-  }
+  // Wire.begin();
+  // delay(2000);
+  // if (!this->mpu.setup(0x68)) {  // endereço do mpu9250
+  //   while (1) {
+  //     Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+  //     delay(5000);
+  //   }
+  // }
 
   // // calibrate anytime you want to
   // //Serial.println("Accel Gyro calibration will start in 5sec.");
@@ -143,6 +143,12 @@ void Ligeirinho::enginesSpeed(int speed){
 void Ligeirinho::stop(){
   analogWrite(this->port_aSpeed, 0);
   analogWrite(this->port_bSpeed, 0);
+
+  digitalWrite(this->port_A1, LOW);
+  digitalWrite(this->port_A2, LOW);
+  
+  digitalWrite(this->port_B1, LOW);
+  digitalWrite(this->port_B2, LOW);
 }
 
 void Ligeirinho::blink_led(int time){
@@ -169,7 +175,7 @@ void Ligeirinho::rotate(float angle){
   float total_time = 0;
   float currentAngle = 0;
 
-  this->clockwise();
+  //this->clockwise();
   this->enginesSpeed(225);
   do {
     if(this->mpu.update()){
@@ -187,7 +193,6 @@ void Ligeirinho::rotate(float angle){
   } while ((currentAngle < angle) && (total_time < 1.5));
 
   this->stop();
-
 }
 
 void Ligeirinho::line_follower(int threshold){
